@@ -1,164 +1,73 @@
-
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import Link from "next/link";
+import { Dumbbell } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useFitLog } from "@/context/FitLogContext";
 
-import type { Workout } from "@/types/workout";
-import toast from "react-hot-toast";
+export default function Navbar() {
+  const pathname = usePathname();
 
-interface FitLogContextType {
-  plan: Workout[];
-  saved: Workout[];
-  addToPlan: (workout: Workout) => void;
-  removeFromPlan: (id: number) => void;
-  saveWorkout: (workout: Workout) => void;
-  removeSaved: (id: number) => void;
-  markAsDone: (id: number) => void;
-  isInPlan: (id: number) => boolean;
-  isSaved: (id: number) => boolean;
-}
-
-const FitLogContext = createContext<FitLogContextType | undefined>(
-  undefined
-);
-
-export function FitLogProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  // Load plan from localStorage
-  const [plan, setPlan] = useState<Workout[]>(() => {
-    if (typeof window === "undefined") {
-      return [];
-    }
-
-    const storedPlan = localStorage.getItem("fitlog-plan");
-
-    try {
-      return storedPlan ? JSON.parse(storedPlan) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  // Load saved workouts from localStorage
-  const [saved, setSaved] = useState<Workout[]>(() => {
-    if (typeof window === "undefined") {
-      return [];
-    }
-
-    const storedSaved = localStorage.getItem("fitlog-saved");
-
-    try {
-      return storedSaved ? JSON.parse(storedSaved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  // Save plan to localStorage
-  useEffect(() => {
-    localStorage.setItem("fitlog-plan", JSON.stringify(plan));
-  }, [plan]);
-
-  // Save saved workouts to localStorage
-  useEffect(() => {
-    localStorage.setItem("fitlog-saved", JSON.stringify(saved));
-  }, [saved]);
-
-  const addToPlan = (workout: Workout) => {
-    if (plan.length >= 5) {
-      toast.error("Today's plan can contain only 5 workouts");
-      return;
-    }
-
-    if (plan.some((item) => item.id === workout.id)) {
-      toast.error("Workout is already in today's plan");
-      return;
-    }
-
-    setPlan((currentPlan) => [...currentPlan, workout]);
-
-    toast.success("Added to today's plan");
-  };
-
-  const removeFromPlan = (id: number) => {
-    setPlan((currentPlan) =>
-      currentPlan.filter((item) => item.id !== id)
-    );
-
-    toast.success("Workout removed from plan");
-  };
-
-  const saveWorkout = (workout: Workout) => {
-    if (saved.some((item) => item.id === workout.id)) {
-      toast.error("Workout is already saved");
-      return;
-    }
-
-    setSaved((currentSaved) => [...currentSaved, workout]);
-
-    toast.success("Workout saved for later");
-  };
-
-  const removeSaved = (id: number) => {
-    setSaved((currentSaved) =>
-      currentSaved.filter((item) => item.id !== id)
-    );
-
-    toast.success("Removed from saved");
-  };
-
-  const markAsDone = (id: number) => {
-    toast.success("Workout marked as done");
-
-    setPlan((currentPlan) =>
-      currentPlan.filter((item) => item.id !== id)
-    );
-  };
-
-  const isInPlan = (id: number) => {
-    return plan.some((item) => item.id === id);
-  };
-
-  const isSaved = (id: number) => {
-    return saved.some((item) => item.id === id);
-  };
+  const { plan, saved } = useFitLog();
 
   return (
-    <FitLogContext.Provider
-      value={{
-        plan,
-        saved,
-        addToPlan,
-        removeFromPlan,
-        saveWorkout,
-        removeSaved,
-        markAsDone,
-        isInPlan,
-        isSaved,
-      }}
-    >
-      {children}
-    </FitLogContext.Provider>
+    <nav className="sticky top-0 z-50 bg-black/95 border-b border-[#292929]">
+      <div className="max-w-7xl mx-auto px-5 md:px-8 h-20 flex items-center justify-between">
+        
+        {/* Logo */}
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-black text-xl"
+        >
+          <div className="w-9 h-9 bg-[#ccff00] text-black flex items-center justify-center rounded-lg">
+            <Dumbbell size={20} />
+          </div>
+
+          <span>FITLOG</span>
+        </Link>
+
+        {/* Navigation */}
+        <div className="hidden md:flex items-center gap-8">
+          <Link
+            href="/"
+            className={`text-sm font-bold ${
+              pathname === "/"
+                ? "text-[#ccff00]"
+                : "text-gray-400"
+            }`}
+          >
+            WORKOUT
+          </Link>
+
+          <Link
+            href="/my-plan"
+            className={`text-sm font-bold ${
+              pathname === "/my-plan"
+                ? "text-[#ccff00]"
+                : "text-gray-400"
+            }`}
+          >
+            MY PLAN
+          </Link>
+        </div>
+
+        {/* Counters */}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/my-plan"
+            className="bg-[#ccff00] text-black px-4 py-2 rounded-full text-xs font-black"
+          >
+            PLAN {plan.length}
+          </Link>
+
+          <Link
+            href="/my-plan"
+            className="border border-gray-600 px-4 py-2 rounded-full text-xs font-black"
+          >
+            SAVED {saved.length}
+          </Link>
+        </div>
+      </div>
+    </nav>
   );
 }
-
-export function useFitLog() {
-  const context = useContext(FitLogContext);
-
-  if (!context) {
-    throw new Error(
-      "useFitLog must be used inside FitLogProvider"
-    );
-  }
-
-  return context;
-}
-
