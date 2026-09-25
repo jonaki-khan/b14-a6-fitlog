@@ -1,5 +1,6 @@
-
 "use client";
+
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import {
   createContext,
@@ -23,68 +24,76 @@ interface FitLogContextType {
   isSaved: (id: number) => boolean;
 }
 
-const FitLogContext = createContext<FitLogContextType | undefined>(
-  undefined
-);
+const FitLogContext = createContext<
+  FitLogContextType | undefined
+>(undefined);
 
 export function FitLogProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Get initial data from localStorage
-  const [plan, setPlan] = useState<Workout[]>(() => {
-    if (typeof window === "undefined") {
-      return [];
+  const [plan, setPlan] = useState<Workout[]>([]);
+  const [saved, setSaved] = useState<Workout[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Load data from localStorage
+  useEffect(() => {
+    const storedPlan = localStorage.getItem("fitlog-plan");
+    const storedSaved = localStorage.getItem("fitlog-saved");
+
+    if (storedPlan) {
+      try {
+        setPlan(JSON.parse(storedPlan));
+      } catch {
+        setPlan([]);
+      }
     }
 
-    try {
-      const storedPlan = localStorage.getItem("fitlog-plan");
-
-      return storedPlan ? JSON.parse(storedPlan) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [saved, setSaved] = useState<Workout[]>(() => {
-    if (typeof window === "undefined") {
-      return [];
+    if (storedSaved) {
+      try {
+        setSaved(JSON.parse(storedSaved));
+      } catch {
+        setSaved([]);
+      }
     }
 
-    try {
-      const storedSaved = localStorage.getItem("fitlog-saved");
-
-      return storedSaved ? JSON.parse(storedSaved) : [];
-    } catch {
-      return [];
-    }
-  });
+    setHydrated(true);
+  }, []);
 
   // Save plan to localStorage
   useEffect(() => {
+    if (!hydrated) return;
+
     localStorage.setItem(
       "fitlog-plan",
       JSON.stringify(plan)
     );
-  }, [plan]);
+  }, [plan, hydrated]);
 
   // Save saved workouts to localStorage
   useEffect(() => {
+    if (!hydrated) return;
+
     localStorage.setItem(
       "fitlog-saved",
       JSON.stringify(saved)
     );
-  }, [saved]);
+  }, [saved, hydrated]);
 
+  // Add workout to plan
   const addToPlan = (workout: Workout) => {
     if (plan.length >= 5) {
-      toast.error("Today's plan can contain only 5 workouts");
+      toast.error(
+        "Today's plan can contain only 5 workouts"
+      );
       return;
     }
 
     if (plan.some((item) => item.id === workout.id)) {
-      toast.error("Workout is already in today's plan");
+      toast.error(
+        "Workout is already in today's plan"
+      );
       return;
     }
 
@@ -96,14 +105,18 @@ export function FitLogProvider({
     toast.success("Added to today's plan");
   };
 
+  // Remove workout from plan
   const removeFromPlan = (id: number) => {
     setPlan((currentPlan) =>
-      currentPlan.filter((item) => item.id !== id)
+      currentPlan.filter(
+        (item) => item.id !== id
+      )
     );
 
     toast.success("Workout removed from plan");
   };
 
+  // Save workout
   const saveWorkout = (workout: Workout) => {
     if (saved.some((item) => item.id === workout.id)) {
       toast.error("Workout is already saved");
@@ -118,28 +131,40 @@ export function FitLogProvider({
     toast.success("Workout saved for later");
   };
 
+  // Remove saved workout
   const removeSaved = (id: number) => {
     setSaved((currentSaved) =>
-      currentSaved.filter((item) => item.id !== id)
+      currentSaved.filter(
+        (item) => item.id !== id
+      )
     );
 
     toast.success("Removed from saved");
   };
 
+  // Mark workout as done
   const markAsDone = (id: number) => {
     setPlan((currentPlan) =>
-      currentPlan.filter((item) => item.id !== id)
+      currentPlan.filter(
+        (item) => item.id !== id
+      )
     );
 
     toast.success("Workout marked as done");
   };
 
+  // Check if workout is in plan
   const isInPlan = (id: number) => {
-    return plan.some((item) => item.id === id);
+    return plan.some(
+      (item) => item.id === id
+    );
   };
 
+  // Check if workout is saved
   const isSaved = (id: number) => {
-    return saved.some((item) => item.id === id);
+    return saved.some(
+      (item) => item.id === id
+    );
   };
 
   return (
@@ -172,4 +197,3 @@ export function useFitLog() {
 
   return context;
 }
-

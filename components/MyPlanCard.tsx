@@ -26,18 +26,19 @@ export default function MyPlanCard({
   saved = false,
 }: MyPlanCardProps) {
   return (
-    <div className="card-dark p-4 flex flex-col md:flex-row gap-5">
+    <div className="card-dark p-4 flex flex-col gap-4">
 
       {/* Image */}
       <img
         src={workout.image}
         alt={workout.name}
-        className="w-full md:w-44 h-32 object-cover"
+        className="w-full h-48 object-cover"
       />
 
       {/* Info */}
-      <div className="flex-1">
+      <div>
 
+        {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-2">
           {workout.muscleGroups.map((group) => (
             <span
@@ -49,15 +50,18 @@ export default function MyPlanCard({
           ))}
         </div>
 
+        {/* Name */}
         <h3 className="font-black text-xl uppercase">
           {workout.name}
         </h3>
 
+        {/* Equipment */}
         <p className="text-sm text-gray-500 mt-1">
           {workout.equipment}
         </p>
 
-        <div className="flex gap-5 mt-4 text-xs text-gray-400">
+        {/* Stats */}
+        <div className="flex flex-wrap gap-4 mt-4 text-xs text-gray-400">
 
           <span className="flex items-center gap-1">
             <Clock size={14} />
@@ -79,7 +83,7 @@ export default function MyPlanCard({
       </div>
 
       {/* Actions */}
-      <div className="flex md:flex-col gap-2 md:w-40">
+      <div className="flex flex-col gap-2">
 
         <Link
           href={`/workout/${workout.id}`}
@@ -107,6 +111,7 @@ export default function MyPlanCard({
         </button>
 
       </div>
+
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowDownRight } from "lucide-react";
 
+
 export default function Hero() {
   return (
     <section className="max-w-7xl mx-auto px-5 md:px-8 py-16 md:py-24">
@@ -41,14 +42,10 @@ export default function Hero() {
         <div className="relative">
           <div className="overflow-hidden border border-[#292929]">
             <img
-              src="https://img.magnific.com/free-photo/portrait-anime-character-doing-fitness-exercising_23-2151666664.jpg?w=740"
-              alt="Workout"
-              className="w-full h-[400px] md:h-[520px] object-cover"
+             src='/banner.png'
+             alt="Fit Log"
+              className="w-[400] h-[400px] md:h-[500px] object-cover"
             />
-          </div>
-
-          <div className="absolute bottom-5 left-5 bg-[#ccff00] text-black px-4 py-2 font-black text-sm">
-            TRAIN HARD
           </div>
         </div>
       </div>
