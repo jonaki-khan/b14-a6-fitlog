@@ -1,6 +1,8 @@
+
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,9 +12,7 @@ import MyPlanCard from "@/components/MyPlanCard";
 import { useFitLog } from "@/context/FitLogContext";
 
 export default function MyPlanPage() {
-  const [activeTab, setActiveTab] = useState<
-    "plan" | "saved"
-  >("plan");
+  const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
 
   const {
     plan,
@@ -91,7 +91,7 @@ export default function MyPlanPage() {
                 : "text-gray-500"
             }`}
           >
-            TODAY'S PLAN ({plan.length})
+            TODAYS PLAN ({plan.length})
           </button>
 
           <button
@@ -120,9 +120,12 @@ export default function MyPlanPage() {
               today moving.
             </p>
 
-            <a href="/" className="mt-6 bg-[#ccff00] text-black px-6 py-3 font-black" >
+            <Link
+              href="/"
+              className="mt-6 bg-[#ccff00] text-black px-6 py-3 font-black"
+            >
               GO TO WORKOUTS
-            </a>
+            </Link>
 
           </div>
         ) : (
@@ -155,3 +158,4 @@ export default function MyPlanPage() {
     </>
   );
 }
+
