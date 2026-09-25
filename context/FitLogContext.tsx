@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -31,28 +32,49 @@ export function FitLogProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [plan, setPlan] = useState<Workout[]>([]);
-  const [saved, setSaved] = useState<Workout[]>([]);
-
-  useEffect(() => {
-    const storedPlan = localStorage.getItem("fitlog-plan");
-    const storedSaved = localStorage.getItem("fitlog-saved");
-
-    if (storedPlan) {
-      setPlan(JSON.parse(storedPlan));
+  // Get initial data from localStorage
+  const [plan, setPlan] = useState<Workout[]>(() => {
+    if (typeof window === "undefined") {
+      return [];
     }
 
-    if (storedSaved) {
-      setSaved(JSON.parse(storedSaved));
-    }
-  }, []);
+    try {
+      const storedPlan = localStorage.getItem("fitlog-plan");
 
+      return storedPlan ? JSON.parse(storedPlan) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [saved, setSaved] = useState<Workout[]>(() => {
+    if (typeof window === "undefined") {
+      return [];
+    }
+
+    try {
+      const storedSaved = localStorage.getItem("fitlog-saved");
+
+      return storedSaved ? JSON.parse(storedSaved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Save plan to localStorage
   useEffect(() => {
-    localStorage.setItem("fitlog-plan", JSON.stringify(plan));
+    localStorage.setItem(
+      "fitlog-plan",
+      JSON.stringify(plan)
+    );
   }, [plan]);
 
+  // Save saved workouts to localStorage
   useEffect(() => {
-    localStorage.setItem("fitlog-saved", JSON.stringify(saved));
+    localStorage.setItem(
+      "fitlog-saved",
+      JSON.stringify(saved)
+    );
   }, [saved]);
 
   const addToPlan = (workout: Workout) => {
@@ -66,13 +88,18 @@ export function FitLogProvider({
       return;
     }
 
-    setPlan([...plan, workout]);
+    setPlan((currentPlan) => [
+      ...currentPlan,
+      workout,
+    ]);
 
     toast.success("Added to today's plan");
   };
 
   const removeFromPlan = (id: number) => {
-    setPlan(plan.filter((item) => item.id !== id));
+    setPlan((currentPlan) =>
+      currentPlan.filter((item) => item.id !== id)
+    );
 
     toast.success("Workout removed from plan");
   };
@@ -83,21 +110,28 @@ export function FitLogProvider({
       return;
     }
 
-    setSaved([...saved, workout]);
+    setSaved((currentSaved) => [
+      ...currentSaved,
+      workout,
+    ]);
 
     toast.success("Workout saved for later");
   };
 
   const removeSaved = (id: number) => {
-    setSaved(saved.filter((item) => item.id !== id));
+    setSaved((currentSaved) =>
+      currentSaved.filter((item) => item.id !== id)
+    );
 
     toast.success("Removed from saved");
   };
 
   const markAsDone = (id: number) => {
-    toast.success("Workout marked as done");
+    setPlan((currentPlan) =>
+      currentPlan.filter((item) => item.id !== id)
+    );
 
-    setPlan(plan.filter((item) => item.id !== id));
+    toast.success("Workout marked as done");
   };
 
   const isInPlan = (id: number) => {
@@ -138,3 +172,4 @@ export function useFitLog() {
 
   return context;
 }
+
