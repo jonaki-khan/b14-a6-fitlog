@@ -3,12 +3,12 @@ Project Name: FitLog
 Short Description : FitLog is a modern fitness workout tracking web application. It allows users to explore different workouts, view workout details, create a personal workout plan, and track their completed workouts in an easy and organized way.
 
 🚀 Technologies Used : 
-      Next.js
-      React
-      TypeScript
-      Tailwind CSS
-      Lucide React
-      React Hot Toast
+      Next.js,
+      React,
+      TypeScript,
+      Tailwind CSS,
+      Lucide React,
+      React Hot Toast,
       Git & GitHub
 
 ✨ 5 Key Features : 
