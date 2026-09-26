@@ -64,11 +64,8 @@ export default function Home() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-10">
 
           <div>
-            <p className="text-[#ccff00] font-bold text-sm tracking-[0.2em]">
-              TRAIN SMART
-            </p>
-
-            <h2 className="display-font text-5xl mt-2">
+          
+            <h2 className="display-font text-4xl mt-2">
               THE LIBRARY
             </h2>
 

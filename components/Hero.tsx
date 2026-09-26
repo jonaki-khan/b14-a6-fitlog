@@ -13,14 +13,9 @@ export default function Hero() {
             WORKOUT LIBRARY
           </p>
 
-          <h1 className="display-font text-5xl md:text-7xl lg:text-8xl leading-[0.9] uppercase">
+          <h1 className="display-font text-3xl md:text-4xl lg:text-5xl leading-[0.9] uppercase">
             TRAIN WITH
-            <br />
-            <span className="text-[#ccff00]">
-              INTENT.
-            </span>
-            <br />
-            LOG EVERY SET.
+              INTENT. LOG <br /> EVERY SET.
           </h1>
 
           <p className="text-gray-400 max-w-xl mt-7 text-base md:text-lg leading-7">
